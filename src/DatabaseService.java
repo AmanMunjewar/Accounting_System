@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.Formatter;
 
 public class DatabaseService {
     static Connection connection;
@@ -17,20 +18,6 @@ public class DatabaseService {
         }
     }
 
-    public void getInfo() {
-        try{
-            //statement.execute("insert into user values(1,'manish')");
-            resultSet = statement.executeQuery("select * from client");
-
-            while (resultSet.next()){
-                System.out.println(resultSet);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void closeConnection(){
         try {
             connection.close();
@@ -39,4 +26,39 @@ public class DatabaseService {
             e.printStackTrace();
         }
     }
+
+    public void getInfo() {
+        try {
+            resultSet = statement.executeQuery("SELECT * FROM client");
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            System.out.println("Account\tName\tDOB\t\t\tPanCard\tBalance");
+
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.print(resultSet.getString(i) + "\t");
+                }
+                System.out.println(); // New line after printing each row
+            }
+            resultSet.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addClient(int account, String name, String DOB, String Pan, int balance){
+        try{
+            Formatter formatter = new Formatter();
+            formatter.format("insert into client values(%d,'%s','%s','%s','%d')",account,name,DOB,Pan,balance);
+            String formattedString = formatter.toString();
+
+            statement.execute(formattedString);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
