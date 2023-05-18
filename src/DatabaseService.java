@@ -5,6 +5,7 @@ public class DatabaseService {
     String user = "root";
     String pass = "root";
 
+
     public void getInfo() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
