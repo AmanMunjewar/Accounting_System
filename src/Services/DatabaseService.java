@@ -1,3 +1,5 @@
+package Services;
+
 import java.sql.*;
 import java.util.Formatter;
 
@@ -20,6 +22,8 @@ public class DatabaseService {
 
     public void closeConnection(){
         try {
+            resultSet.close();
+            statement.close();
             connection.close();
         }
         catch (Exception e){
@@ -33,7 +37,7 @@ public class DatabaseService {
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
 
-            System.out.println("Account\tName\tDOB\t\t\tPanCard\tBalance");
+            System.out.println("Models.Account\tName\tDOB\t\t\tPanCard\tBalance");
 
             while (resultSet.next()) {
                 for (int i = 1; i <= columnCount; i++) {
@@ -41,24 +45,39 @@ public class DatabaseService {
                 }
                 System.out.println(); // New line after printing each row
             }
-            resultSet.close();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void addClient(int account, String name, String DOB, String Pan, int balance){
-        try{
-            Formatter formatter = new Formatter();
-            formatter.format("insert into client values(%d,'%s','%s','%s','%d')",account,name,DOB,Pan,balance);
-            String formattedString = formatter.toString();
+    public void addClient(int account, String name, String DOB, String Pan, int balance, String pass) {
+        try {
+            // Insert into client table
+            String clientQuery = "INSERT INTO client VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement clientStatement = connection.prepareStatement(clientQuery);
+            clientStatement.setInt(1, account);
+            clientStatement.setString(2, name);
+            clientStatement.setString(3, DOB);
+            clientStatement.setString(4, Pan);
+            clientStatement.setInt(5, balance);
+            clientStatement.execute();
 
-            statement.execute(formattedString);
-        }
-        catch (Exception e){
+            // Insert into account table
+            String accountQuery = "INSERT INTO account VALUES (?, ?)";
+            PreparedStatement accountStatement = connection.prepareStatement(accountQuery);
+            accountStatement.setInt(1, account);
+            accountStatement.setString(2, pass);
+            accountStatement.execute();
+
+            // Close the prepared statements
+            clientStatement.close();
+            accountStatement.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 
 }

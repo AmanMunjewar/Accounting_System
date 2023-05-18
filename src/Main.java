@@ -1,3 +1,6 @@
+import Models.Account;
+import Services.DatabaseService;
+
 import java.util.Scanner;
 
 public class Main {
@@ -12,7 +15,7 @@ public class Main {
 
         System.out.println("-------------Welcome to VECTOR bank-------------");
 
-        while (entry){
+        do {
             System.out.println("1. Create a account");
             System.out.println("2. Access an existing account");
             System.out.println("3. Exit ");
@@ -30,7 +33,7 @@ public class Main {
                     entry = false;
                     break;
             }
-        }
+        } while (entry);
 
         service.closeConnection();
     }
