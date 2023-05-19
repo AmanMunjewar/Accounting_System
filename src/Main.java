@@ -4,7 +4,6 @@ import Utilities.Util;
 
 public class Main {
     static boolean entry = true, acc_entry = true;
-    static int k,m;
     public static void main(String[] args) {
         DatabaseService service = new DatabaseService();
         Account account = new Account();
@@ -18,7 +17,7 @@ public class Main {
             System.out.println("\n1. Create a account");
             System.out.println("2. Access an existing account");
             System.out.println("3. Exit ");
-            k = util.check_int();
+            int k = util.check_int();
             System.out.println();
 
             switch (k) {
@@ -30,17 +29,16 @@ public class Main {
                         System.out.println("\n1. View account info");
                         System.out.println("2. Deposit amount");
                         System.out.println("3. Withdraw amount");
-                        System.out.println("4. Exit");
-                        m = util.check_int();
+                        System.out.println("4. Open passbook");
+                        System.out.println("5. Exit");
+                        int m = util.check_int();
 
                         switch (m) {
-                            case 1 -> {
-                                service.getInfo(accountNo);
-                                continue;
-                            }
+                            case 1 -> service.getInfo(accountNo);
                             case 2 -> account.deposit(accountNo);
                             case 3 -> account.withdraw(accountNo);
-                            case 4 -> acc_entry = false;
+                            case 4 -> service.viewPassbook(accountNo);
+                            case 5 -> acc_entry = false;
                         }
                     } while (acc_entry);
                 }

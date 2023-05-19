@@ -78,7 +78,6 @@ public class DatabaseService {
 
             resultSet.close();
             clientStatement.close();
-
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -102,6 +101,27 @@ public class DatabaseService {
         return false;
     }
 
+    public int getBalance(int account) {
+        int amount = 0;
+        try {
+            String clientQuery = "select balance from client where accountNo = ?";
+            PreparedStatement clientStatement = connection.prepareStatement(clientQuery);
+            clientStatement.setInt(1, account);
+            resultSet = clientStatement.executeQuery();
+
+            while (resultSet.next()){
+                amount = resultSet.getInt(1);
+            }
+            resultSet.close();
+            return amount;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
     public void deposit(int account, int amount){
         try{
             String clientQuery = "update client set balance= balance+? where accountNo = ?;";
@@ -110,8 +130,15 @@ public class DatabaseService {
             clientStatement.setInt(2,account);
             clientStatement.execute();
 
-            getInfo(account);
+            String passQuery ="INSERT INTO passbook VALUE (?,CURRENT_TIMESTAMP,?,0,?)" ;
+            PreparedStatement passStatement = connection.prepareStatement(passQuery);
+            passStatement.setInt(1,account);
+            passStatement.setInt(2,amount);
+            passStatement.setInt(3,getBalance(account));
+            passStatement.execute();
 
+            getInfo(account);
+            passStatement.close();
             clientStatement.close();
         }
         catch (Exception e){
@@ -127,11 +154,57 @@ public class DatabaseService {
             clientStatement.setInt(2,account);
             clientStatement.execute();
 
-            getInfo(account);
+            String passQuery ="INSERT INTO passbook VALUE (?,CURRENT_TIMESTAMP,0,?,?)" ;
+            PreparedStatement passStatement = connection.prepareStatement(passQuery);
+            passStatement.setInt(1,account);
+            passStatement.setInt(2,amount);
+            passStatement.setInt(3,getBalance(account));
+            passStatement.execute();
 
+            getInfo(account);
+            passStatement.close();
             clientStatement.close();
         }
         catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void viewPassbook(int account) {
+        try {
+            String passQuery = "SELECT * FROM passbook WHERE AccountNo = ?";
+            PreparedStatement passStatement = connection.prepareStatement(passQuery);
+            passStatement.setInt(1, account);
+            resultSet = passStatement.executeQuery();
+
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // Calculate maximum column lengths
+            int[] maxColumnLengths = new int[columnCount];
+            for (int i = 1; i <= columnCount; i++) {
+                maxColumnLengths[i - 1] = metaData.getColumnDisplaySize(i);
+            }
+
+            System.out.println("Account\t\t\t\tTime\t\tDeposit\t\tWithdraw\tBalance");
+
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    String value = resultSet.getString(i);
+                    int padding = maxColumnLengths[i - 1] - value.length();
+
+                    System.out.print(value);
+                    for (int j = 0; j < padding; j++) {
+                        System.out.print(" ");
+                    }
+
+                    if (i < columnCount) {
+                        System.out.print("\t");
+                    }
+                }
+                System.out.println();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
