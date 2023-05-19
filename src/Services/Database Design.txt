@@ -4,15 +4,13 @@ mysql>create database banking;
 
 mysql> use banking;
 Database changed
+
 mysql> drop table user;
 Query OK, 0 rows affected (0.01 sec)
 
 mysql> show tables;
 Empty set (0.01 sec)
 
-mysql> create table client(
-    -> accountNo int,
-    -> ^C
 mysql> create table client(
     -> accountNo int,
     -> name varchar(20),
@@ -22,34 +20,12 @@ mysql> create table client(
     -> primary key(accountNo));
 Query OK, 0 rows affected (0.02 sec)
 
-mysql> insert into client values(1121,"aman","2003-09-12","HGF786",7000);
-Query OK, 1 row affected (0.01 sec)
-
-mysql> select * from client;
-+-----------+------+------------+--------+---------+
-| accountNo | name | DOB        | pan    | balance |
-+-----------+------+------------+--------+---------+
-|      1121 | aman | 2003-09-12 | HGF786 |    7000 |
-+-----------+------+------------+--------+---------+
-1 row in set (0.00 sec)
-
 mysql> create table account(
     -> accountNo int,
     -> password varchar(10),
     -> foreign key(accountNo) references client(accountNo));
 Query OK, 0 rows affected (0.02 sec)
 
-mysql> insert into account values(1121,"root");
-Query OK, 1 row affected (0.00 sec)
-
-mysql> select * from account;
-+-----------+----------+
-| accountNo | password |
-+-----------+----------+
-|      1121 | root     |
-+-----------+----------+
-1 row in set (0.00 sec)
-
 mysql> show tables;
 +-------------------+
 | Tables_in_banking |
@@ -59,22 +35,23 @@ mysql> show tables;
 +-------------------+
 2 rows in set (0.00 sec)
 
-mysql> select * from client;
-+-----------+------+------------+--------+---------+
-| accountNo | name | DOB        | pan    | balance |
-+-----------+------+------------+--------+---------+
-|      1121 | aman | 2003-09-12 | HGF786 |    7000 |
-|      1123 | aman | 2003-12-02 | WER432 |    5000 |
-+-----------+------+------------+--------+---------+
+mysql> desc client;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| accountNo | int         | NO   | PRI | NULL    |       |
+| name      | varchar(20) | YES  |     | NULL    |       |
+| DOB       | date        | YES  |     | NULL    |       |
+| pan       | varchar(10) | YES  |     | NULL    |       |
+| balance   | int         | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+5 rows in set (0.02 sec)
+
+mysql> desc account;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| accountNo | int         | YES  | MUL | NULL    |       |
+| password  | varchar(10) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
 2 rows in set (0.00 sec)
-
-mysql> show tables;
-+-------------------+
-| Tables_in_banking |
-+-------------------+
-| account           |
-| client            |
-+-------------------+
-2 rows in set (0.01 sec)
-
-mysql>
