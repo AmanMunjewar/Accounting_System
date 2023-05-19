@@ -1,4 +1,5 @@
 Before running the program please ensure that you design the following database in your system.
+Be mindful of the various datatype and variable names.
 
 mysql>create database banking;
 
