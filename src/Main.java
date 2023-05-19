@@ -34,14 +34,17 @@ public class Main {
                         m = util.check_int();
 
                         switch (m) {
-                            case 1 -> service.getInfo(accountNo);
+                            case 1 -> {
+                                service.getInfo(accountNo);
+                                continue;
+                            }
                             case 2 -> account.deposit(accountNo);
                             case 3 -> account.withdraw(accountNo);
                             case 4 -> acc_entry = false;
                         }
                     } while (acc_entry);
                 }
-                case 4 -> entry = false;
+                case 3 -> entry = false;
             }
         } while (entry);
 

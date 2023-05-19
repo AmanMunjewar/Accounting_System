@@ -22,7 +22,6 @@ public class DatabaseService {
 
     public void closeConnection(){
         try {
-            resultSet.close();
             statement.close();
             connection.close();
         }
@@ -103,7 +102,7 @@ public class DatabaseService {
         return false;
     }
 
-    public void deposite(int account, int amount){
+    public void deposit(int account, int amount){
         try{
             String clientQuery = "update client set balance= balance+? where accountNo = ?;";
             PreparedStatement clientStatement = connection.prepareStatement(clientQuery);

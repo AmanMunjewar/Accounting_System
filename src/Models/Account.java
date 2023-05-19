@@ -58,7 +58,7 @@ public class Account {
 
     public void deposit(int account){
         int amount = util.check_amount();
-        service.deposite(account,amount);
+        service.deposit(account,amount);
     }
 
     public void withdraw(int account){
