@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: vector_bank_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_secure_pass_2026}
+      MYSQL_DATABASE: ${DB_NAME:-banking}
+      MYSQL_USER: ${DB_USER:-banking_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-banking_secure_pass_2026}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - vector_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vector_bank_app
+    stdin_open: true
+    tty: true
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME:-banking}
+      DB_USER: ${DB_USER:-banking_user}
+      DB_PASSWORD: ${DB_PASSWORD:-banking_secure_pass_2026}
+    networks:
+      - vector_network
+
+volumes:
+  mysql_data:
+
+networks:
+  vector_network:
+    driver: bridge
