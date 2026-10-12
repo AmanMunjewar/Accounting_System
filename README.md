@@ -29,9 +29,12 @@
 ```
 com.vectorbank
 ├── Main.java                        # Dependency injection & entry point
-├── cli/                             # Presentation Layer (Interactive UI)
+├── cli/                             # Presentation Layer (Interactive CLI)
 │   ├── BankingCli.java
 │   └── InputReader.java
+├── web/                             # Presentation Layer (Interactive Web UI & REST API)
+│   ├── BankingWebServer.java        # Standard library HTTP server
+│   └── WebUiTemplate.java           # Responsive Single-Page Application
 ├── config/                          # Infrastructure & Configuration Layer
 │   └── DatabaseConfig.java
 ├── dsa/                             # Custom Data Structures & Algorithms
@@ -66,10 +69,13 @@ A fresh clone works with **only Docker installed** (no local Java or MySQL neede
 # 1. Prepare environment variables
 cp .env.example .env
 
-# 2. Start the MySQL 8 database service in the background
-docker compose up -d db
+# 2. Start the database and web app in the background
+docker compose up -d
 
-# 3. Launch the interactive VECTOR Bank CLI (with terminal & stdin attached)
+# 3. Open the modern Web UI in your browser:
+# 👉 http://localhost:8080
+
+# 4. (Optional) Run the interactive CLI terminal:
 docker compose run --rm app
 ```
 

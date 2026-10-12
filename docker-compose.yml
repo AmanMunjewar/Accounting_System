@@ -38,6 +38,9 @@ services:
       DB_NAME: ${DB_NAME:-banking}
       DB_USER: ${DB_USER:-banking_user}
       DB_PASSWORD: ${DB_PASSWORD:-banking_secure_pass_2026}
+      PORT: 8080
+    ports:
+      - "8080:8080"
     networks:
       - vector_network
 

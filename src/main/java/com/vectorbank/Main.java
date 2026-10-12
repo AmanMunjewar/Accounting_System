@@ -36,7 +36,24 @@ public class Main {
                 accountCache
         );
 
-        // 5. Start CLI User Interface
+        // 5. Start Web UI Server (port 8080 or WEB_PORT env variable)
+        int webPort = 8080;
+        String envPort = System.getenv("PORT");
+        if (envPort == null || envPort.isEmpty()) envPort = System.getenv("WEB_PORT");
+        if (envPort != null && !envPort.isEmpty()) {
+            try {
+                webPort = Integer.parseInt(envPort);
+            } catch (NumberFormatException ignored) {}
+        }
+
+        try {
+            com.vectorbank.web.BankingWebServer webServer = new com.vectorbank.web.BankingWebServer(webPort, bankingService);
+            webServer.start();
+        } catch (Exception e) {
+            System.err.println("⚠️ Could not start Web Server: " + e.getMessage());
+        }
+
+        // 6. Start Interactive CLI User Interface
         BankingCli cli = new BankingCli(bankingService);
         cli.start();
     }
