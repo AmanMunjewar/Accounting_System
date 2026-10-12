@@ -64,6 +64,7 @@ class BankingServiceTest {
         testAccount = new Account(testAccountNo, testCustomer, new BigDecimal("500.00"), hashedPassword);
 
         lenient().when(databaseConfig.getConnection()).thenReturn(connection);
+        lenient().when(connection.getAutoCommit()).thenReturn(true);
     }
 
     @Test
